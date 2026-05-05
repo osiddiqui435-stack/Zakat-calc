@@ -34,3 +34,6 @@ Contributions, suggestions, and improvements are welcome.
 
 ## 📜 License
 This project is open-source and free to use.
+
+## author
+Obaidullah siddiqui

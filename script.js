@@ -13,17 +13,86 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
 });
 
+// ===== CURRENCY CONFIGURATION =====
+// Exchange rates relative to 1 USD (Approximate values - update periodically)
+const exchangeRates = {
+    'USD': { symbol: '$', rate: 1 },
+    'INR': { symbol: '₹', rate: 83.12 },
+    'KWD': { symbol: 'KD', rate: 0.31 },      // Kuwaiti Dinar
+    'GBP': { symbol: '£', rate: 0.79 },
+    'EUR': { symbol: '€', rate: 0.92 },
+    'PKR': { symbol: '₨', rate: 278.50 },
+    'SAR': { symbol: '﷼', rate: 3.75 },
+    'AED': { symbol: 'د.إ', rate: 3.67 }
+};
+
+// Default base prices in USD (You can update these to current market rates)
+const baseGoldPriceUSD = 65; // Price per gram in USD
+const baseSilverPriceUSD = 0.80; // Price per gram in USD
+
+let currentCurrency = 'USD';
+
+// Function to change currency
+function changeCurrency(currencyCode) {
+    currentCurrency = currencyCode;
+    const currencyData = exchangeRates[currencyCode];
+    
+    // 1. Update all Currency Symbols in the UI
+    document.querySelectorAll('.currency').forEach(el => {
+        el.textContent = currencyData.symbol;
+    });
+
+    // 2. Update Input Placeholder Prices (Convert from USD base)
+    const localGoldPrice = (baseGoldPriceUSD * currencyData.rate).toFixed(2);
+    const localSilverPrice = (baseSilverPriceUSD * currencyData.rate).toFixed(2);
+
+    const goldInput = document.getElementById('goldPricePerGram');
+    const silverInput = document.getElementById('silverPricePerGram');
+
+    // Only update if the user hasn't manually changed them yet (optional logic)
+    // For now, we force update to give the user the local estimate:
+    goldInput.value = localGoldPrice;
+    silverInput.value = localSilverPrice;
+
+    // 3. Trigger calculation updates
+    updateNisabPrices();
+    updatePreciousMetalValue();
+    
+    // Recalculate if values exist
+    if (document.getElementById('cashHand').value) {
+        runFullCalculation(); 
+    }
+}
+
+// Helper to format currency based on selection
+function formatCurrency(amount) {
+    const data = exchangeRates[currentCurrency];
+    // Use Intl.NumberFormat for proper comma separation
+    return data.symbol + new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(amount);
+}
+
 function initializeApp() {
     // Initialize all components
     initNavigation();
     initCategoryToggles();
     initFaqAccordion();
     initCalculator();
+    
+    // Setup Currency Listener
+    const currencySelector = document.getElementById('currencySelector');
+    currencySelector.addEventListener('change', (e) => {
+        changeCurrency(e.target.value);
+    });
+
+    // Initialize with default currency (USD)
     updateNisabPrices();
     
     // Set default gold/silver prices in form
-    document.getElementById('goldPricePerGram').value = goldPricePerGram;
-    document.getElementById('silverPricePerGram').value = silverPricePerGram;
+    document.getElementById('goldPricePerGram').value = baseGoldPriceUSD;
+    document.getElementById('silverPricePerGram').value = baseSilverPriceUSD;
 }
 
 // ===== NAVIGATION =====
@@ -114,11 +183,302 @@ function initFaqAccordion() {
 
 // ===== UPDATE NISAB PRICES =====
 function updateNisabPrices() {
-    const goldNisabPrice = GOLD_NISAB_GRAMS * goldPricePerGram;
-    const silverNisabPrice = SILVER_NISAB_GRAMS * silverPricePerGram;
+    const currencyData = exchangeRates[currentCurrency];
+    
+    // Get user input prices or use default converted prices
+    const currentGoldPrice = parseFloat(document.getElementById('goldPricePerGram').value) || (baseGoldPriceUSD * currencyData.rate);
+    const currentSilverPrice = parseFloat(document.getElementById('silverPricePerGram').value) || (baseSilverPriceUSD * currencyData.rate);
+
+    const goldNisabPrice = GOLD_NISAB_GRAMS * currentGoldPrice;
+    const silverNisabPrice = SILVER_NISAB_GRAMS * currentSilverPrice;
     
     document.getElementById('goldNisabPrice').textContent = formatCurrency(goldNisabPrice);
     document.getElementById('silverNisabPrice').textContent = formatCurrency(silverNisabPrice);
+}
+
+// ======================================================
+// MODULAR ZAKAT CALCULATION ENGINE
+// ======================================================
+
+const ZakatEngine = {
+    // ----- 1. CASH & SAVINGS (2.5%) -----
+    calculateCash: function(values) {
+        const total = values.cashHand + values.bankSavings + values.fixedDeposits + values.otherCash;
+        const rate = 0.025; // 2.5%
+        return {
+            name: "Cash & Savings",
+            totalValue: total,
+            rate: "2.5%",
+            zakatDue: total * rate
+        };
+    },
+
+    // ----- 2. GOLD & SILVER (2.5%) -----
+    calculatePreciousMetals: function(values, currentPrices) {
+        const goldValue = values.goldWeight * currentPrices.gold;
+        const silverValue = values.silverWeight * currentPrices.silver;
+        const total = goldValue + silverValue;
+        const rate = 0.025; // 2.5%
+        
+        return {
+            name: "Gold & Silver",
+            totalValue: total,
+            rate: "2.5%",
+            breakdown: {
+                goldValue: goldValue,
+                silverValue: silverValue
+            },
+            zakatDue: total * rate
+        };
+    },
+
+    // ----- 3. INVESTMENTS & BUSINESS (2.5%) -----
+    calculateInvestments: function(values) {
+        const total = values.sharesStocks + values.mutualFunds + values.businessCapital + values.receivables;
+        const rate = 0.025; // 2.5%
+        return {
+            name: "Investments & Business",
+            totalValue: total,
+            rate: "2.5%",
+            zakatDue: total * rate
+        };
+    },
+
+    // ----- 4. PROPERTY (2.5% on investment property only) -----
+    calculateProperty: function(values) {
+        const total = values.investmentProperty + values.landForSale + values.rentalIncome;
+        const rate = 0.025; // 2.5%
+        return {
+            name: "Investment Property",
+            totalValue: total,
+            rate: "2.5%",
+            zakatDue: total * rate
+        };
+    },
+
+    // ----- 5. AGRICULTURE (5% / 10% / 7.5%) -----
+    calculateAgriculture: function(values) {
+        const cropValue = values.cropValue;
+        const irrigationType = values.cropType; // 0.10, 0.05, or 0.075
+        
+        let rateLabel = "10% (Rain-fed)";
+        if (irrigationType === 0.05) rateLabel = "5% (Irrigated)";
+        if (irrigationType === 0.075) rateLabel = "7.5% (Partial)";
+
+        return {
+            name: "Agricultural Produce",
+            totalValue: cropValue,
+            rate: rateLabel,
+            zakatDue: cropValue * irrigationType
+        };
+    },
+
+    // ----- 6. LIVESTOCK (Complex Rules) -----
+    calculateLivestock: function(values) {
+        const result = { name: "Livestock", totalValue: 0, zakatDue: 0, details: [] };
+        const camelCount = values.camels;
+        const cattleCount = values.cattle;
+        const sheepGoatCount = values.sheepGoats;
+
+        // Approximate value for display purposes
+        const CAMEL_VAL = 5000;
+        const CATTLE_VAL = 1500;
+        const SHEEP_VAL = 200;
+
+        result.totalValue = (camelCount * CAMEL_VAL) + (cattleCount * CATTLE_VAL) + (sheepGoatCount * SHEEP_VAL);
+
+        // --- Camels Calculation ---
+        if (camelCount >= 5) {
+            let camelZakat = 0;
+            if (camelCount >= 5 && camelCount <= 9) camelZakat = 1 * SHEEP_VAL;
+            else if (camelCount >= 10 && camelCount <= 14) camelZakat = 2 * SHEEP_VAL;
+            else if (camelCount >= 15 && camelCount <= 19) camelZakat = 3 * SHEEP_VAL;
+            else if (camelCount >= 20 && camelCount <= 24) camelZakat = 4 * SHEEP_VAL;
+            else if (camelCount >= 25 && camelCount <= 35) camelZakat = 1 * CAMEL_VAL; // 1 baby she-camel
+            // Add more rules as needed...
+            
+            result.details.push(`Camels (${camelCount}): ~$${camelZakat}`);
+            result.zakatDue += camelZakat;
+        }
+
+        // --- Cattle Calculation ---
+        if (cattleCount >= 30) {
+            let cattleZakat = 0;
+            if (cattleCount >= 30 && cattleCount <= 39) cattleZakat = 1 * 300; // 1 calf (1yr)
+            else if (cattleCount >= 40 && cattleCount <= 59) cattleZakat = 1 * 500; // 1 calf (2yr)
+            else if (cattleCount >= 60 && cattleCount <= 69) cattleZakat = 2 * 300;
+            // Add more rules...
+            
+            result.details.push(`Cattle (${cattleCount}): ~$${cattleZakat}`);
+            result.zakatDue += cattleZakat;
+        }
+
+        // --- Sheep/Goats Calculation ---
+        if (sheepGoatCount >= 40) {
+            let sheepZakat = 0;
+            if (sheepGoatCount >= 40 && sheepGoatCount <= 120) sheepZakat = 1 * SHEEP_VAL;
+            else if (sheepGoatCount >= 121 && sheepGoatCount <= 200) sheepZakat = 2 * SHEEP_VAL;
+            else if (sheepGoatCount >= 201 && sheepGoatCount <= 399) sheepZakat = 3 * SHEEP_VAL;
+            else if (sheepGoatCount >= 400) sheepZakat = 4 * SHEEP_VAL;
+            // Add more rules...
+
+            result.details.push(`Sheep/Goats (${sheepGoatCount}): ~$${sheepZakat}`);
+            result.zakatDue += sheepZakat;
+        }
+
+        result.rate = "Variable (Nisab dependent)";
+        return result;
+    }
+};
+
+// ======================================================
+// MAIN CALCULATION CONTROLLER
+// ======================================================
+
+function runFullCalculation() {
+    // 1. Gather Inputs
+    const inputs = {
+        cash: {
+            cashHand: parseFloat(document.getElementById('cashHand').value) || 0,
+            bankSavings: parseFloat(document.getElementById('bankSavings').value) || 0,
+            fixedDeposits: parseFloat(document.getElementById('fixedDeposits').value) || 0,
+            otherCash: parseFloat(document.getElementById('otherCash').value) || 0
+        },
+        metals: {
+            goldWeight: parseFloat(document.getElementById('goldWeight').value) || 0,
+            silverWeight: parseFloat(document.getElementById('silverWeight').value) || 0,
+        },
+        investments: {
+            sharesStocks: parseFloat(document.getElementById('sharesStocks').value) || 0,
+            mutualFunds: parseFloat(document.getElementById('mutualFunds').value) || 0,
+            businessCapital: parseFloat(document.getElementById('businessCapital').value) || 0,
+            receivables: parseFloat(document.getElementById('receivables').value) || 0
+        },
+        property: {
+            investmentProperty: parseFloat(document.getElementById('investmentProperty').value) || 0,
+            landForSale: parseFloat(document.getElementById('landForSale').value) || 0,
+            rentalIncome: parseFloat(document.getElementById('rentalIncome').value) || 0
+        },
+        agriculture: {
+            cropValue: parseFloat(document.getElementById('cropValue').value) || 0,
+            cropType: parseFloat(document.getElementById('cropType').value) || 0.10
+        },
+        livestock: {
+            camels: parseInt(document.getElementById('camels').value) || 0,
+            cattle: parseInt(document.getElementById('cattle').value) || 0,
+            sheepGoats: parseInt(document.getElementById('sheepGoats').value) || 0
+        },
+        liabilities: {
+            debtsOwed: parseFloat(document.getElementById('debtsOwed').value) || 0,
+            billsPayable: parseFloat(document.getElementById('billsPayable').value) || 0
+        },
+        prices: {
+            gold: parseFloat(document.getElementById('goldPricePerGram').value) || 65,
+            silver: parseFloat(document.getElementById('silverPricePerGram').value) || 0.80
+        }
+    };
+
+    // 2. Run Calculations for Each Category
+    const results = {
+        cashResult: ZakatEngine.calculateCash(inputs.cash),
+        metalsResult: ZakatEngine.calculatePreciousMetals(inputs.metals, inputs.prices),
+        investmentResult: ZakatEngine.calculateInvestments(inputs.investments),
+        propertyResult: ZakatEngine.calculateProperty(inputs.property),
+        agricultureResult: ZakatEngine.calculateAgriculture(inputs.agriculture),
+        livestockResult: ZakatEngine.calculateLivestock(inputs.livestock)
+    };
+
+    // 3. Calculate Totals
+    let grossAssets = 0;
+    let totalZakat = 0;
+
+    for (const key in results) {
+        grossAssets += results[key].totalValue;
+        totalZakat += results[key].zakatDue;
+    }
+
+    const totalLiabilities = inputs.liabilities.debtsOwed + inputs.liabilities.billsPayable;
+    const netAssets = grossAssets - totalLiabilities;
+
+    // 4. Determine Nisab
+    const nisabType = document.querySelector('input[name="nisabType"]:checked').value;
+    let nisabThreshold;
+    if (nisabType === 'gold') {
+        nisabThreshold = 87.48 * inputs.prices.gold;
+    } else {
+        nisabThreshold = 612.36 * inputs.prices.silver;
+    }
+
+    // 5. Final Verdict
+    const zakatPayable = (netAssets >= nisabThreshold) ? totalZakat : 0;
+
+    // 6. Update UI
+    updateUI({
+        grossAssets,
+        totalLiabilities,
+        netAssets,
+        nisabThreshold,
+        zakatPayable,
+        detailedResults: results,
+        isEligible: netAssets >= nisabThreshold
+    });
+}
+
+// ======================================================
+// UI UPDATE FUNCTION
+// ======================================================
+
+function updateUI(data) {
+    // Update Summary
+    document.getElementById('totalAssets').textContent = formatCurrency(data.grossAssets);
+    document.getElementById('totalLiabilities').textContent = '-' + formatCurrency(data.totalLiabilities);
+    document.getElementById('netWealth').textContent = formatCurrency(data.netAssets);
+    document.getElementById('nisabThreshold').textContent = formatCurrency(data.nisabThreshold);
+    
+    // Update Status
+    const statusEl = document.getElementById('zakatStatus');
+    if (data.isEligible) {
+        statusEl.innerHTML = `
+            <div class="status-icon"><i class="fas fa-check-circle"></i></div>
+            <h4>Zakat is Due</h4>
+            <p>Your wealth exceeds the Nisab threshold</p>`;
+        statusEl.classList.remove('not-due');
+    } else {
+        statusEl.innerHTML = `
+            <div class="status-icon"><i class="fas fa-times-circle"></i></div>
+            <h4>No Zakat Due</h4>
+            <p>Your wealth is below the Nisab threshold</p>`;
+        statusEl.classList.add('not-due');
+    }
+
+    document.getElementById('zakatAmount').textContent = formatCurrency(data.zakatPayable);
+
+    // Update Breakdown List
+    const breakdownList = document.getElementById('breakdownList');
+    breakdownList.innerHTML = '';
+
+    const allCategories = data.detailedResults;
+    
+    for (const key in allCategories) {
+        const item = allCategories[key];
+        if (item.totalValue > 0) {
+            const div = document.createElement('div');
+            div.className = 'breakdown-item';
+            div.innerHTML = `
+                <div class="name">
+                    <i class="fas fa-circle"></i>
+                    <span>${item.name} <small>(${item.rate})</small></span>
+                </div>
+                <div class="amount">${formatCurrency(item.zakatDue)}</div>
+            `;
+            breakdownList.appendChild(div);
+        }
+    }
+}
+
+// Helper function (Keep this if not already present)
+function formatCurrency(amount) {
+    return '$' + amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 }
 
 // ===== CALCULATOR INITIALIZATION =====
@@ -127,7 +487,7 @@ function initCalculator() {
     const resetBtn = document.getElementById('resetBtn');
     
     // Calculate button
-    calculateBtn.addEventListener('click', calculateZakat);
+    calculateBtn.addEventListener('click', runFullCalculation);
     
     // Reset button
     resetBtn.addEventListener('click', resetCalculator);
@@ -164,56 +524,7 @@ function updatePreciousMetalValue() {
     document.querySelector('#preciousMetalValue strong').textContent = formatCurrency(totalValue);
 }
 
-// ===== CALCULATE ZAKAT =====
-function calculateZakat() {
-    // Get all asset values
-    const assets = getAssetValues();
-    
-    // Get liabilities
-    const liabilities = getLiabilities();
-    
-    // Calculate totals
-    const totalAssets = calculateTotalAssets(assets);
-    const totalLiabilities = liabilities.debtsOwed + liabilities.billsPayable;
-    const netWealth = totalAssets - totalLiabilities;
-    
-    // Get selected Nisab
-    const nisabType = document.querySelector('input[name="nisabType"]:checked').value;
-    const nisabThreshold = nisabType === 'gold' 
-        ? GOLD_NISAB_GRAMS * (parseFloat(document.getElementById('goldPricePerGram').value) || goldPricePerGram)
-        : SILVER_NISAB_GRAMS * (parseFloat(document.getElementById('silverPricePerGram').value) || silverPricePerGram);
-    
-    // Calculate Zakat
-    let zakatAmount = 0;
-    let zakatDue = netWealth >= nisabThreshold;
-    
-    // Update prices based on input
-    const inputGoldPrice = parseFloat(document.getElementById('goldPricePerGram').value);
-    const inputSilverPrice = parseFloat(document.getElementById('silverPricePerGram').value);
-    if (inputGoldPrice) goldPricePerGram = inputGoldPrice;
-    if (inputSilverPrice) silverPricePerGram = inputSilverPrice;
-    
-    // Calculate Zakat breakdown by category
-    const breakdown = calculateBreakdown(assets);
-    
-    if (zakatDue) {
-        zakatAmount = breakdown.totalZakat;
-    }
-    
-    // Update UI
-    updateResults({
-        totalAssets,
-        totalLiabilities,
-        netWealth,
-        nisabThreshold,
-        zakatDue,
-        zakatAmount,
-        breakdown
-    });
-    
-    // Scroll to results
-    document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
+
 
 // ===== GET ASSET VALUES =====
 function getAssetValues() {
@@ -298,69 +609,7 @@ function calculateTotalAssets(assets) {
     return total;
 }
 
-// ===== CALCULATE BREAKDOWN =====
-function calculateBreakdown(assets) {
-    const breakdown = [];
-    let totalZakat = 0;
-    
-    // Cash & Savings (2.5%)
-    const cashTotal = assets.cashSavings.cashHand + 
-                      assets.cashSavings.bankSavings + 
-                      assets.cashSavings.fixedDeposits + 
-                      assets.cashSavings.otherCash;
-    if (cashTotal > 0) {
-        const zakat = cashTotal * 0.025;
-        breakdown.push({ name: 'Cash & Savings', amount: cashTotal, zakat });
-        totalZakat += zakat;
-    }
-    
-    // Gold & Silver (2.5%)
-    const goldSilverTotal = (assets.goldSilver.goldWeight * assets.goldSilver.goldPrice) + 
-                           (assets.goldSilver.silverWeight * assets.goldSilver.silverPrice);
-    if (goldSilverTotal > 0) {
-        const zakat = goldSilverTotal * 0.025;
-        breakdown.push({ name: 'Gold & Silver', amount: goldSilverTotal, zakat });
-        totalZakat += zakat;
-    }
-    
-    // Investments (2.5%)
-    const investmentsTotal = assets.investments.sharesStocks + 
-                             assets.investments.mutualFunds + 
-                             assets.investments.businessCapital + 
-                             assets.investments.receivables;
-    if (investmentsTotal > 0) {
-        const zakat = investmentsTotal * 0.025;
-        breakdown.push({ name: 'Investments', amount: investmentsTotal, zakat });
-        totalZakat += zakat;
-    }
-    
-    // Property (2.5%)
-    const propertyTotal = assets.property.investmentProperty + 
-                          assets.property.landForSale + 
-                          assets.property.rentalIncome;
-    if (propertyTotal > 0) {
-        const zakat = propertyTotal * 0.025;
-        breakdown.push({ name: 'Property', amount: propertyTotal, zakat });
-        totalZakat += zakat;
-    }
-    
-    // Agriculture (variable rate)
-    if (assets.agriculture.cropValue > 0) {
-        const zakat = assets.agriculture.cropValue * assets.agriculture.cropType;
-        const ratePercent = (assets.agriculture.cropType * 100).toFixed(0);
-        breakdown.push({ name: `Agriculture (${ratePercent}%)`, amount: assets.agriculture.cropValue, zakat });
-        totalZakat += zakat;
-    }
-    
-    // Livestock
-    const livestockZakat = calculateLivestockZakat(assets.livestock);
-    if (livestockZakat.value > 0) {
-        breakdown.push({ name: 'Livestock', amount: livestockZakat.value, zakat: livestockZakat.zakat });
-        totalZakat += livestockZakat.zakat;
-    }
-    
-    return { breakdown, totalZakat };
-}
+
 
 // ===== CALCULATE LIVESTOCK ZAKAT =====
 function calculateLivestockZakat(livestock) {

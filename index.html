@@ -69,7 +69,7 @@
                     <p class="nisab-equivalent">Equivalent to 7.5 Tola</p>
                     <div class="nisab-price">
                         <span>Current Price:</span>
-                        <strong id="goldNisabPrice">$0</strong>
+                        <strong id="goldNisabPrice"> 0</strong>
                     </div>
                 </div>
                 
@@ -85,7 +85,7 @@
                     <p class="nisab-equivalent">Equivalent to 52.5 Tola</p>
                     <div class="nisab-price">
                         <span>Current Price:</span>
-                        <strong id="silverNisabPrice">$0</strong>
+                        <strong id="silverNisabPrice"> 0</strong>
                     </div>
                 </div>
                 
@@ -116,6 +116,22 @@
             <div class="calculator-wrapper">
                 <div class="calculator-form">
                     <form id="zakatForm">
+                        
+                        <!-- Currency Selection -->
+<div class="form-group currency-select">
+    <label>Select Currency</label>
+    <select id="currencySelector">
+        <option value="USD" data-symbol=" ">USD - US Dollar</option>
+        <option value="INR" data-symbol="₹">INR - Indian Rupee</option>
+        <option value="KWD" data-symbol="د.ك">KWD - Kuwaiti Dinar</option>
+        <option value="GBP" data-symbol="£">GBP - British Pound</option>
+        <option value="EUR" data-symbol="€">EUR - Euro</option>
+        <option value="PKR" data-symbol="₨">PKR - Pakistani Rupee</option>
+        <option value="SAR" data-symbol="﷼">SAR - Saudi Riyal</option>
+        <option value="AED" data-symbol="د.إ">AED - UAE Dirham</option>
+    </select>
+</div>
+                        
                         <!-- Nisab Selection -->
                         <div class="form-group nisab-select">
                             <label>Select Nisab Standard</label>
@@ -149,14 +165,14 @@
                                     <div class="form-group">
                                         <label for="cashHand">Cash in Hand</label>
                                         <div class="input-wrapper">
-                                            <span class="currency">$</span>
+                                            <span class="currency"> </span>
                                             <input type="number" id="cashHand" placeholder="0.00" min="0" step="0.01">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="bankSavings">Bank Savings</label>
                                         <div class="input-wrapper">
-                                            <span class="currency">$</span>
+                                            <span class="currency"> </span>
                                             <input type="number" id="bankSavings" placeholder="0.00" min="0" step="0.01">
                                         </div>
                                     </div>
@@ -165,14 +181,14 @@
                                     <div class="form-group">
                                         <label for="fixedDeposits">Fixed Deposits</label>
                                         <div class="input-wrapper">
-                                            <span class="currency">$</span>
+                                            <span class="currency"> </span>
                                             <input type="number" id="fixedDeposits" placeholder="0.00" min="0" step="0.01">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="otherCash">Other Cash Assets</label>
                                         <div class="input-wrapper">
-                                            <span class="currency">$</span>
+                                            <span class="currency"> </span>
                                             <input type="number" id="otherCash" placeholder="0.00" min="0" step="0.01">
                                         </div>
                                     </div>
@@ -201,9 +217,9 @@
                                         <small class="input-hint">Enter weight of gold you own</small>
                                     </div>
                                     <div class="form-group">
-                                        <label for="goldPricePerGram">Gold Price ($/gram)</label>
+                                        <label for="goldPricePerGram">Gold Price ( /gram)</label>
                                         <div class="input-wrapper">
-                                            <span class="currency">$</span>
+                                            <span class="currency"> </span>
                                             <input type="number" id="goldPricePerGram" placeholder="60.00" min="0" step="0.01">
                                         </div>
                                         <small class="input-hint">Current market price per gram</small>
@@ -218,16 +234,16 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="silverPricePerGram">Silver Price ($/gram)</label>
+                                        <label for="silverPricePerGram">Silver Price ( /gram)</label>
                                         <div class="input-wrapper">
-                                            <span class="currency">$</span>
+                                            <span class="currency"> </span>
                                             <input type="number" id="silverPricePerGram" placeholder="0.80" min="0" step="0.01">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="calculated-value" id="preciousMetalValue">
                                     <span>Total Gold & Silver Value:</span>
-                                    <strong>$0.00</strong>
+                                    <strong> 0.00</strong>
                                 </div>
                             </div>
                         </div>
@@ -247,7 +263,7 @@
                                     <div class="form-group">
                                         <label for="sharesStocks">Shares & Stocks</label>
                                         <div class="input-wrapper">
-                                            <span class="currency">$</span>
+                                            <span class="currency"> </span>
                                             <input type="number" id="sharesStocks" placeholder="0.00" min="0" step="0.01">
                                         </div>
                                         <small class="input-hint">Current market value</small>
@@ -255,7 +271,7 @@
                                     <div class="form-group">
                                         <label for="mutualFunds">Mutual Funds</label>
                                         <div class="input-wrapper">
-                                            <span class="currency">$</span>
+                                            <span class="currency"> </span>
                                             <input type="number" id="mutualFunds" placeholder="0.00" min="0" step="0.01">
                                         </div>
                                     </div>
@@ -264,7 +280,7 @@
                                     <div class="form-group">
                                         <label for="businessCapital">Business Capital</label>
                                         <div class="input-wrapper">
-                                            <span class="currency">$</span>
+                                            <span class="currency"> </span>
                                             <input type="number" id="businessCapital" placeholder="0.00" min="0" step="0.01">
                                         </div>
                                         <small class="input-hint">Inventory + cash - liabilities</small>
@@ -272,7 +288,7 @@
                                     <div class="form-group">
                                         <label for="receivables">Receivables</label>
                                         <div class="input-wrapper">
-                                            <span class="currency">$</span>
+                                            <span class="currency"> </span>
                                             <input type="number" id="receivables" placeholder="0.00" min="0" step="0.01">
                                         </div>
                                         <small class="input-hint">Money owed to you</small>
@@ -300,7 +316,7 @@
                                     <div class="form-group">
                                         <label for="investmentProperty">Investment Property Value</label>
                                         <div class="input-wrapper">
-                                            <span class="currency">$</span>
+                                            <span class="currency"> </span>
                                             <input type="number" id="investmentProperty" placeholder="0.00" min="0" step="0.01">
                                         </div>
                                         <small class="input-hint">Property bought for profit</small>
@@ -308,7 +324,7 @@
                                     <div class="form-group">
                                         <label for="landForSale">Land for Sale</label>
                                         <div class="input-wrapper">
-                                            <span class="currency">$</span>
+                                            <span class="currency"> </span>
                                             <input type="number" id="landForSale" placeholder="0.00" min="0" step="0.01">
                                         </div>
                                         <small class="input-hint">Land purchased to resell</small>
@@ -318,7 +334,7 @@
                                     <div class="form-group">
                                         <label for="rentalIncome">Annual Rental Income</label>
                                         <div class="input-wrapper">
-                                            <span class="currency">$</span>
+                                            <span class="currency"> </span>
                                             <input type="number" id="rentalIncome" placeholder="0.00" min="0" step="0.01">
                                         </div>
                                         <small class="input-hint">After deducting expenses</small>
@@ -354,7 +370,7 @@
                                     <div class="form-group">
                                         <label for="cropValue">Crop Value</label>
                                         <div class="input-wrapper">
-                                            <span class="currency">$</span>
+                                            <span class="currency"> </span>
                                             <input type="number" id="cropValue" placeholder="0.00" min="0" step="0.01">
                                         </div>
                                     </div>
@@ -429,14 +445,14 @@
                                     <div class="form-group">
                                         <label for="debtsOwed">Debts Owed to Others</label>
                                         <div class="input-wrapper">
-                                            <span class="currency">$</span>
+                                            <span class="currency"> </span>
                                             <input type="number" id="debtsOwed" placeholder="0.00" min="0" step="0.01">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="billsPayable">Bills Payable</label>
                                         <div class="input-wrapper">
-                                            <span class="currency">$</span>
+                                            <span class="currency"> </span>
                                             <input type="number" id="billsPayable" placeholder="0.00" min="0" step="0.01">
                                         </div>
                                     </div>
@@ -469,19 +485,19 @@
                         <div class="result-summary">
                             <div class="summary-item">
                                 <span class="label">Total Assets</span>
-                                <span class="value" id="totalAssets">$0.00</span>
+                                <span class="value" id="totalAssets"> 0.00</span>
                             </div>
                             <div class="summary-item">
                                 <span class="label">Less: Liabilities</span>
-                                <span class="value negative" id="totalLiabilities">-$0.00</span>
+                                <span class="value negative" id="totalLiabilities">- 0.00</span>
                             </div>
                             <div class="summary-item">
                                 <span class="label">Net Wealth</span>
-                                <span class="value" id="netWealth">$0.00</span>
+                                <span class="value" id="netWealth"> 0.00</span>
                             </div>
                             <div class="summary-item nisab-check">
                                 <span class="label">Nisab Threshold</span>
-                                <span class="value" id="nisabThreshold">$0.00</span>
+                                <span class="value" id="nisabThreshold"> 0.00</span>
                             </div>
                         </div>
 
@@ -496,7 +512,7 @@
                         <div class="final-zakat">
                             <div class="zakat-amount">
                                 <span class="label">Your Zakat Amount</span>
-                                <span class="amount" id="zakatAmount">$0.00</span>
+                                <span class="amount" id="zakatAmount"> 0.00</span>
                             </div>
                             <p class="zakat-note">This amount should be paid to eligible recipients within the lunar year.</p>
                         </div>
