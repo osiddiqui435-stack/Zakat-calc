@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zakat Calculator | Islamic Charity Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-moon"></i>
+                <span>ZakatCalc</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#calculator" class="active">Calculator</a></li>
+                <li><a href="#nisab-info">Nisab</a></li>
+                <li><a href="#recipients">Recipients</a></li>
+                <li><a href="#exemptions">Exemptions</a></li>
+                <li><a href="#rates">Zakat Rates</a></li>
+            </ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Calculate Your Zakat</h1>
+            <p class="hero-subtitle">Fulfill your Islamic obligation with precision and understanding</p>
+            <a href="#calculator" class="cta-btn">
+                <span>Start Calculation</span>
+                <i class="fas fa-arrow-down"></i>
+            </a>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Nisab Information Section -->
+    <section id="nisab-info" class="info-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Understanding</span>
+                <h2 class="section-title">What is Nisab?</h2>
+                <p class="section-desc">Nisab is the minimum amount of wealth a Muslim must possess before they become liable to pay Zakat.</p>
+            </div>
+            
+            <div class="nisab-cards">
+                <div class="nisab-card gold-card">
+                    <div class="card-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <h3>Gold Nisab</h3>
+                    <div class="nisab-value">
+                        <span class="amount">87.48</span>
+                        <span class="unit">grams</span>
+                    </div>
+                    <p class="nisab-equivalent">Equivalent to 7.5 Tola</p>
+                    <div class="nisab-price">
+                        <span>Current Price:</span>
+                        <strong id="goldNisabPrice">$0</strong>
+                    </div>
+                </div>
+                
+                <div class="nisab-card silver-card">
+                    <div class="card-icon">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h3>Silver Nisab</h3>
+                    <div class="nisab-value">
+                        <span class="amount">612.36</span>
+                        <span class="unit">grams</span>
+                    </div>
+                    <p class="nisab-equivalent">Equivalent to 52.5 Tola</p>
+                    <div class="nisab-price">
+                        <span>Current Price:</span>
+                        <strong id="silverNisabPrice">$0</strong>
+                    </div>
+                </div>
+                
+                <div class="nisab-card info-card">
+                    <div class="card-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <h3>Which Nisab to Use?</h3>
+                    <p class="info-text">Most scholars recommend using the <strong>silver Nisab</strong> as it benefits the poor more. However, you may use the gold Nisab for a more conservative calculation.</p>
+                    <div class="tip-box">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Using silver Nisab means more people qualify to pay Zakat, increasing charity distribution.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculator Section -->
+    <section id="calculator" class="calculator-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Calculate</span>
+                <h2 class="section-title">Zakat Calculator</h2>
+                <p class="section-desc">Enter your assets below to calculate your Zakat obligation accurately.</p>
+            </div>
+
+            <div class="calculator-wrapper">
+                <div class="calculator-form">
+                    <form id="zakatForm">
+                        <!-- Nisab Selection -->
+                        <div class="form-group nisab-select">
+                            <label>Select Nisab Standard</label>
+                            <div class="toggle-group">
+                                <input type="radio" name="nisabType" id="silverNisab" value="silver" checked>
+                                <label for="silverNisab" class="toggle-option">
+                                    <i class="fas fa-gem"></i>
+                                    <span>Silver Nisab</span>
+                                    <small>(Recommended)</small>
+                                </label>
+                                <input type="radio" name="nisabType" id="goldNisabRadio" value="gold">
+                                <label for="goldNisabRadio" class="toggle-option">
+                                    <i class="fas fa-coins"></i>
+                                    <span>Gold Nisab</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Cash & Savings -->
+                        <div class="asset-category">
+                            <div class="category-header" data-toggle="cashSavings">
+                                <div class="category-title">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    <span>Cash & Savings</span>
+                                </div>
+                                <span class="rate-badge">2.5%</span>
+                                <i class="fas fa-chevron-down toggle-icon"></i>
+                            </div>
+                            <div class="category-content" id="cashSavings">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="cashHand">Cash in Hand</label>
+                                        <div class="input-wrapper">
+                                            <span class="currency">$</span>
+                                            <input type="number" id="cashHand" placeholder="0.00" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="bankSavings">Bank Savings</label>
+                                        <div class="input-wrapper">
+                                            <span class="currency">$</span>
+                                            <input type="number" id="bankSavings" placeholder="0.00" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="fixedDeposits">Fixed Deposits</label>
+                                        <div class="input-wrapper">
+                                            <span class="currency">$</span>
+                                            <input type="number" id="fixedDeposits" placeholder="0.00" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="otherCash">Other Cash Assets</label>
+                                        <div class="input-wrapper">
+                                            <span class="currency">$</span>
+                                            <input type="number" id="otherCash" placeholder="0.00" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gold & Silver -->
+                        <div class="asset-category">
+                            <div class="category-header" data-toggle="goldSilver">
+                                <div class="category-title">
+                                    <i class="fas fa-ring"></i>
+                                    <span>Gold & Silver Jewelry</span>
+                                </div>
+                                <span class="rate-badge">2.5%</span>
+                                <i class="fas fa-chevron-down toggle-icon"></i>
+                            </div>
+                            <div class="category-content collapsed" id="goldSilver">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="goldWeight">Gold Weight (grams)</label>
+                                        <div class="input-wrapper">
+                                            <input type="number" id="goldWeight" placeholder="0.00" min="0" step="0.01">
+                                            <span class="unit">g</span>
+                                        </div>
+                                        <small class="input-hint">Enter weight of gold you own</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="goldPricePerGram">Gold Price ($/gram)</label>
+                                        <div class="input-wrapper">
+                                            <span class="currency">$</span>
+                                            <input type="number" id="goldPricePerGram" placeholder="60.00" min="0" step="0.01">
+                                        </div>
+                                        <small class="input-hint">Current market price per gram</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="silverWeight">Silver Weight (grams)</label>
+                                        <div class="input-wrapper">
+                                            <input type="number" id="silverWeight" placeholder="0.00" min="0" step="0.01">
+                                            <span class="unit">g</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="silverPricePerGram">Silver Price ($/gram)</label>
+                                        <div class="input-wrapper">
+                                            <span class="currency">$</span>
+                                            <input type="number" id="silverPricePerGram" placeholder="0.80" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="calculated-value" id="preciousMetalValue">
+                                    <span>Total Gold & Silver Value:</span>
+                                    <strong>$0.00</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Investments & Business -->
+                        <div class="asset-category">
+                            <div class="category-header" data-toggle="investments">
+                                <div class="category-title">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>Investments & Business</span>
+                                </div>
+                                <span class="rate-badge">2.5%</span>
+                                <i class="fas fa-chevron-down toggle-icon"></i>
+                            </div>
+                            <div class="category-content collapsed" id="investments">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="sharesStocks">Shares & Stocks</label>
+                                        <div class="input-wrapper">
+                                            <span class="currency">$</span>
+                                            <input type="number" id="sharesStocks" placeholder="0.00" min="0" step="0.01">
+                                        </div>
+                                        <small class="input-hint">Current market value</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mutualFunds">Mutual Funds</label>
+                                        <div class="input-wrapper">
+                                            <span class="currency">$</span>
+                                            <input type="number" id="mutualFunds" placeholder="0.00" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="businessCapital">Business Capital</label>
+                                        <div class="input-wrapper">
+                                            <span class="currency">$</span>
+                                            <input type="number" id="businessCapital" placeholder="0.00" min="0" step="0.01">
+                                        </div>
+                                        <small class="input-hint">Inventory + cash - liabilities</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="receivables">Receivables</label>
+                                        <div class="input-wrapper">
+                                            <span class="currency">$</span>
+                                            <input type="number" id="receivables" placeholder="0.00" min="0" step="0.01">
+                                        </div>
+                                        <small class="input-hint">Money owed to you</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Property & Land -->
+                        <div class="asset-category">
+                            <div class="category-header" data-toggle="property">
+                                <div class="category-title">
+                                    <i class="fas fa-building"></i>
+                                    <span>Property & Land</span>
+                                </div>
+                                <span class="rate-badge">2.5%</span>
+                                <i class="fas fa-chevron-down toggle-icon"></i>
+                            </div>
+                            <div class="category-content collapsed" id="property">
+                                <div class="warning-box">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <p>Zakat is only on property/land purchased for investment/resale. Personal residence is exempt.</p>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="investmentProperty">Investment Property Value</label>
+                                        <div class="input-wrapper">
+                                            <span class="currency">$</span>
+                                            <input type="number" id="investmentProperty" placeholder="0.00" min="0" step="0.01">
+                                        </div>
+                                        <small class="input-hint">Property bought for profit</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="landForSale">Land for Sale</label>
+                                        <div class="input-wrapper">
+                                            <span class="currency">$</span>
+                                            <input type="number" id="landForSale" placeholder="0.00" min="0" step="0.01">
+                                        </div>
+                                        <small class="input-hint">Land purchased to resell</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="rentalIncome">Annual Rental Income</label>
+                                        <div class="input-wrapper">
+                                            <span class="currency">$</span>
+                                            <input type="number" id="rentalIncome" placeholder="0.00" min="0" step="0.01">
+                                        </div>
+                                        <small class="input-hint">After deducting expenses</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Agricultural Produce -->
+                        <div class="asset-category">
+                            <div class="category-header" data-toggle="agriculture">
+                                <div class="category-title">
+                                    <i class="fas fa-seedling"></i>
+                                    <span>Agricultural Produce</span>
+                                </div>
+                                <span class="rate-badge multiple">5-10%</span>
+                                <i class="fas fa-chevron-down toggle-icon"></i>
+                            </div>
+                            <div class="category-content collapsed" id="agriculture">
+                                <div class="info-box">
+                                    <i class="fas fa-info-circle"></i>
+                                    <p><strong>Rates:</strong> 10% for rain-fed crops, 5% for irrigated crops, 7.5% for mixed irrigation.</p>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="cropType">Irrigation Type</label>
+                                        <select id="cropType">
+                                            <option value="0.10">Rain-fed (Natural) - 10%</option>
+                                            <option value="0.05">Fully Irrigated - 5%</option>
+                                            <option value="0.075">Partially Irrigated - 7.5%</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cropValue">Crop Value</label>
+                                        <div class="input-wrapper">
+                                            <span class="currency">$</span>
+                                            <input type="number" id="cropValue" placeholder="0.00" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Livestock -->
+                        <div class="asset-category">
+                            <div class="category-header" data-toggle="livestock">
+                                <div class="category-title">
+                                    <i class="fas fa-cow"></i>
+                                    <span>Livestock</span>
+                                </div>
+                                <span class="rate-badge variable">Variable</span>
+                                <i class="fas fa-chevron-down toggle-icon"></i>
+                            </div>
+                            <div class="category-content collapsed" id="livestock">
+                                <div class="livestock-info">
+                                    <h4>Livestock Zakat Rules:</h4>
+                                    <div class="livestock-rules">
+                                        <div class="rule-item">
+                                            <strong>Camels:</strong> 5-9 camels = 1 sheep; 10-14 = 2 sheep; increases with count
+                                        </div>
+                                        <div class="rule-item">
+                                            <strong>Cattle:</strong> 30-39 = 1 calf (1yr); 40-59 = 1 calf (2yr)
+                                        </div>
+                                        <div class="rule-item">
+                                            <strong>Sheep/Goats:</strong> 40-120 = 1 sheep; 121-200 = 2 sheep
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row three-col">
+                                    <div class="form-group">
+                                        <label for="camels">Camels</label>
+                                        <div class="input-wrapper">
+                                            <input type="number" id="camels" placeholder="0" min="0" step="1">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cattle">Cattle</label>
+                                        <div class="input-wrapper">
+                                            <input type="number" id="cattle" placeholder="0" min="0" step="1">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="sheepGoats">Sheep/Goats</label>
+                                        <div class="input-wrapper">
+                                            <input type="number" id="sheepGoats" placeholder="0" min="0" step="1">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Liabilities -->
+                        <div class="asset-category liabilities-category">
+                            <div class="category-header" data-toggle="liabilities">
+                                <div class="category-title">
+                                    <i class="fas fa-minus-circle"></i>
+                                    <span>Deductible Liabilities</span>
+                                </div>
+                                <span class="rate-badge deduct">Deduct</span>
+                                <i class="fas fa-chevron-down toggle-icon"></i>
+                            </div>
+                            <div class="category-content collapsed" id="liabilities">
+                                <div class="info-box">
+                                    <i class="fas fa-info-circle"></i>
+                                    <p>Debts owed to others can be deducted from your assets before calculating Zakat.</p>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="debtsOwed">Debts Owed to Others</label>
+                                        <div class="input-wrapper">
+                                            <span class="currency">$</span>
+                                            <input type="number" id="debtsOwed" placeholder="0.00" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="billsPayable">Bills Payable</label>
+                                        <div class="input-wrapper">
+                                            <span class="currency">$</span>
+                                            <input type="number" id="billsPayable" placeholder="0.00" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Calculate Button -->
+                        <div class="form-actions">
+                            <button type="button" id="calculateBtn" class="btn-primary">
+                                <i class="fas fa-calculator"></i>
+                                <span>Calculate Zakat</span>
+                            </button>
+                            <button type="reset" id="resetBtn" class="btn-secondary">
+                                <i class="fas fa-redo"></i>
+                                <span>Reset Form</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Results Panel -->
+                <div class="results-panel" id="resultsPanel">
+                    <div class="results-header">
+                        <i class="fas fa-chart-pie"></i>
+                        <h3>Zakat Calculation Results</h3>
+                    </div>
+                    
+                    <div class="results-body">
+                        <div class="result-summary">
+                            <div class="summary-item">
+                                <span class="label">Total Assets</span>
+                                <span class="value" id="totalAssets">$0.00</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Less: Liabilities</span>
+                                <span class="value negative" id="totalLiabilities">-$0.00</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Net Wealth</span>
+                                <span class="value" id="netWealth">$0.00</span>
+                            </div>
+                            <div class="summary-item nisab-check">
+                                <span class="label">Nisab Threshold</span>
+                                <span class="value" id="nisabThreshold">$0.00</span>
+                            </div>
+                        </div>
+
+                        <div class="zakat-status" id="zakatStatus">
+                            <div class="status-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h4>Zakat is Due</h4>
+                            <p>Your wealth exceeds the Nisab threshold</p>
+                        </div>
+
+                        <div class="final-zakat">
+                            <div class="zakat-amount">
+                                <span class="label">Your Zakat Amount</span>
+                                <span class="amount" id="zakatAmount">$0.00</span>
+                            </div>
+                            <p class="zakat-note">This amount should be paid to eligible recipients within the lunar year.</p>
+                        </div>
+
+                        <div class="breakdown-section">
+                            <h4>Breakdown by Category</h4>
+                            <div class="breakdown-list" id="breakdownList">
+                                <!-- Dynamically populated -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="results-footer">
+                        <button class="btn-print" onclick="window.print()">
+                            <i class="fas fa-print"></i>
+                            Print Results
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recipients Section -->
+    <section id="recipients" class="recipients-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Eligibility</span>
+                <h2 class="section-title">Who Can Receive Zakat?</h2>
+                <p class="section-desc">The Quran specifies eight categories of people eligible to receive Zakat (Surah At-Tawbah 9:60).</p>
+            </div>
+
+            <div class="recipients-grid">
+                <div class="recipient-card">
+                    <div class="recipient-number">1</div>
+                    <div class="recipient-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h4>Fuqara (The Poor)</h4>
+                    <p>Those who do not possess enough wealth to meet their basic needs. They have some means but not sufficient for their daily requirements.</p>
+                </div>
+
+                <div class="recipient-card">
+                    <div class="recipient-number">2</div>
+                    <div class="recipient-icon">
+                        <i class="fas fa-hand-holding-heart"></i>
+                    </div>
+                    <h4>Masakin (The Needy)</h4>
+                    <p>Those who are extremely poor and have no means whatsoever. They are worse off than the Fuqara and depend entirely on charity.</p>
+                </div>
+
+                <div class="recipient-card">
+                    <div class="recipient-number">3</div>
+                    <div class="recipient-icon">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <h4>Amileen (Zakat Collectors)</h4>
+                    <p>Those appointed to collect and distribute Zakat. They receive a reasonable wage for their work from the Zakat funds.</p>
+                </div>
+
+                <div class="recipient-card">
+                    <div class="recipient-number">4</div>
+                    <div class="recipient-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h4>Mu'allafatu Qulub</h4>
+                    <p>Those whose hearts are to be reconciled. This includes new Muslims or those inclined towards Islam who need support to strengthen their faith.</p>
+                </div>
+
+                <div class="recipient-card">
+                    <div class="recipient-number">5</div>
+                    <div class="recipient-icon">
+                        <i class="fas fa-unlock"></i>
+                    </div>
+                    <h4>Riqaab (Captives/Slaves)</h4>
+                    <p>For freeing slaves or captives. In modern times, this can include paying ransom for Muslims held captive or helping free people from bondage.</p>
+                </div>
+
+                <div class="recipient-card">
+                    <div class="recipient-number">6</div>
+                    <div class="recipient-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <h4>Gharimeen (Debtors)</h4>
+                    <p>Those in debt who cannot pay it off. They must be in genuine distress and the debt should be for permissible needs, not for sinful purposes.</p>
+                </div>
+
+                <div class="recipient-card">
+                    <div class="recipient-number">7</div>
+                    <div class="recipient-icon">
+                        <i class="fas fa-mosque"></i>
+                    </div>
+                    <h4>Fi Sabeelillah</h4>
+                    <p>In the cause of Allah. This includes those striving in the path of Allah, such as students of Islamic knowledge, fighters for just causes, or community welfare projects.</p>
+                </div>
+
+                <div class="recipient-card">
+                    <div class="recipient-number">8</div>
+                    <div class="recipient-icon">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <h4>Ibnus Sabil (Wayfarers)</h4>
+                    <p>Travelers stranded without resources. Even a wealthy person who loses their means while traveling can receive Zakat to return home.</p>
+                </div>
+            </div>
+
+            <div class="additional-recipient-info">
+                <h4>Important Guidelines:</h4>
+                <ul>
+                    <li><i class="fas fa-check"></i> Recipients must be Muslim (except some scholars allow non-Muslims under certain conditions)</li>
+                    <li><i class="fas fa-check"></i> Cannot give Zakat to parents, grandparents, children, or grandchildren</li>
+                    <li><i class="fas fa-check"></i> Cannot give Zakat to spouse</li>
+                    <li><i class="fas fa-check"></i> Cannot give Zakat to Sayyid family (descendants of Prophet Muhammad PBUH)</li>
+                    <li><i class="fas fa-check"></i> Should not give more than 1/3 of Zakat to one recipient</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Exemptions Section -->
+    <section id="exemptions" class="exemptions-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Exemptions</span>
+                <h2 class="section-title">What is Exempt from Zakat?</h2>
+                <p class="section-desc">Understanding what assets are not subject to Zakat is equally important.</p>
+            </div>
+
+            <div class="exemptions-grid">
+                <div class="exemption-card">
+                    <div class="exemption-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h4>Personal Residence</h4>
+                    <p>The house you live in is exempt from Zakat. However, if you own multiple properties for investment, Zakat is due on those.</p>
+                </div>
+
+                <div class="exemption-card">
+                    <div class="exemption-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <h4>Personal Vehicles</h4>
+                    <p>Cars, motorcycles, or any vehicles used for personal transportation are not subject to Zakat.</p>
+                </div>
+
+                <div class="exemption-card">
+                    <div class="exemption-icon">
+                        <i class="fas fa-couch"></i>
+                    </div>
+                    <h4>Household Items</h4>
+                    <p>Furniture, appliances, clothing, and other household items for personal use are exempt from Zakat.</p>
+                </div>
+
+                <div class="exemption-card">
+                    <div class="exemption-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h4>Tools of Trade</h4>
+                    <p>Tools, machinery, and equipment used for your profession or business are not subject to Zakat on their value.</p>
+                </div>
+
+                <div class="exemption-card">
+                    <div class="exemption-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h4>Books & Knowledge</h4>
+                    <p>Books, educational materials, and resources for seeking knowledge are exempt from Zakat.</p>
+                </div>
+
+                <div class="exemption-card">
+                    <div class="exemption-icon">
+                        <i class="fas fa-ring"></i>
+                    </div>
+                    <h4>Jewelry for Use</h4>
+                    <p>Some scholars exempt jewelry worn regularly by women, while others include all gold/silver. The safer opinion is to pay on all jewelry.</p>
+                </div>
+
+                <div class="exemption-card">
+                    <div class="exemption-icon">
+                        <i class="fas fa-ban"></i>
+                    </div>
+                    <h4>Haram Income</h4>
+                    <p>Income from prohibited sources (interest, alcohol, gambling, etc.) must be disposed of entirely, not as Zakat but as removing haram wealth.</p>
+                </div>
+
+                <div class="exemption-card">
+                    <div class="exemption-icon">
+                        <i class="fas fa-baby"></i>
+                    </div>
+                    <h4>Minor's Wealth</h4>
+                    <p>Some schools exempt wealth of minors from Zakat, while others (like Shafi'i) require it. The majority opinion is that Zakat is due.</p>
+                </div>
+            </div>
+
+            <div class="exemption-note">
+                <i class="fas fa-info-circle"></i>
+                <p><strong>Note:</strong> While these items are exempt from Zakat, they may still be subject to other forms of charity like Sadaqah or Waqf. Always consult with a qualified Islamic scholar for specific situations.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Zakat Rates Section -->
+    <section id="rates" class="rates-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Reference</span>
+                <h2 class="section-title">Zakat Rates by Asset Type</h2>
+                <p class="section-desc">Different types of wealth have different Zakat rates based on Islamic jurisprudence.</p>
+            </div>
+
+            <div class="rates-table-wrapper">
+                <table class="rates-table">
+                    <thead>
+                        <tr>
+                            <th>Asset Type</th>
+                            <th>Nisab</th>
+                            <th>Zakat Rate</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="asset-name">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    <span>Cash & Savings</span>
+                                </div>
+                            </td>
+                            <td>Value of 612.36g Silver</td>
+                            <td><span class="rate">2.5%</span></td>
+                            <td>Includes all liquid cash, bank balances, and savings</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="asset-name">
+                                    <i class="fas fa-coins"></i>
+                                    <span>Gold</span>
+                                </div>
+                            </td>
+                            <td>87.48 grams</td>
+                            <td><span class="rate">2.5%</span></td>
+                            <td>All gold owned, whether jewelry or bullion</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="asset-name">
+                                    <i class="fas fa-gem"></i>
+                                    <span>Silver</span>
+                                </div>
+                            </td>
+                            <td>612.36 grams</td>
+                            <td><span class="rate">2.5%</span></td>
+                            <td>All silver owned, including utensils and jewelry</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="asset-name">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>Stocks & Investments</span>
+                                </div>
+                            </td>
+                            <td>Value of 612.36g Silver</td>
+                            <td><span class="rate">2.5%</span></td>
+                            <td>On market value of holdings</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="asset-name">
+                                    <i class="fas fa-store"></i>
+                                    <span>Business Inventory</span>
+                                </div>
+                            </td>
+                            <td>Value of 612.36g Silver</td>
+                            <td><span class="rate">2.5%</span></td>
+                            <td>On tradable goods and merchandise</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="asset-name">
+                                    <i class="fas fa-building"></i>
+                                    <span>Investment Property</span>
+                                </div>
+                            </td>
+                            <td>Value of 612.36g Silver</td>
+                            <td><span class="rate">2.5%</span></td>
+                            <td>Only on property bought for resale/investment</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="asset-name">
+                                    <i class="fas fa-cloud-rain"></i>
+                                    <span>Crops (Rain-fed)</span>
+                                </div>
+                            </td>
+                            <td>653 kg (5 Wasaq)</td>
+                            <td><span class="rate">10%</span></td>
+                            <td>Naturally irrigated by rain or springs</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="asset-name">
+                                    <i class="fas fa-tint"></i>
+                                    <span>Crops (Irrigated)</span>
+                                </div>
+                            </td>
+                            <td>653 kg (5 Wasaq)</td>
+                            <td><span class="rate">5%</span></td>
+                            <td>Artificially irrigated with cost</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="asset-name">
+                                    <i class="fas fa-horse"></i>
+                                    <span>Camels</span>
+                                </div>
+                            </td>
+                            <td>5 camels</td>
+                            <td><span class="rate">Variable</span></td>
+                            <td>See detailed livestock table below</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="asset-name">
+                                    <i class="fas fa-cow"></i>
+                                    <span>Cattle (Cows/Buffalo)</span>
+                                </div>
+                            </td>
+                            <td>30 head</td>
+                            <td><span class="rate">Variable</span></td>
+                            <td>See detailed livestock table below</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="asset-name">
+                                    <i class="fas fa-sheep"></i>
+                                    <span>Sheep & Goats</span>
+                                </div>
+                            </td>
+                            <td>40 head</td>
+                            <td><span class="rate">Variable</span></td>
+                            <td>See detailed livestock table below</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="asset-name">
+                                    <i class="fas fa-coins"></i>
+                                    <span>Treasures (Rikaz)</span>
+                                </div>
+                            </td>
+                            <td>Any amount</td>
+                            <td><span class="rate">20%</span></td>
+                            <td>Buried treasures found on land</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="asset-name">
+                                    <i class="fas fa-gem"></i>
+                                    <span>Pearls & Precious Stones</span>
+                                </div>
+                            </td>
+                            <td>Value equivalent</td>
+                            <td><span class="rate">2.5%</span></td>
+                            <td>For trade purposes only</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Livestock Detailed Table -->
+            <div class="livestock-detailed">
+                <h3><i class="fas fa-horse"></i> Detailed Livestock Zakat Table</h3>
+                
+                <div class="livestock-table-container">
+                    <div class="livestock-table">
+                        <h4>Camels (Minimum Nisab: 5)</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Number</th>
+                                    <th>Zakat Due</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>5-9</td><td>1 sheep/goat</td></tr>
+                                <tr><td>10-14</td><td>2 sheep/goats</td></tr>
+                                <tr><td>15-19</td><td>3 sheep/goats</td></tr>
+                                <tr><td>20-24</td><td>4 sheep/goats</td></tr>
+                                <tr><td>25-35</td><td>1 young she-camel (1 year)</td></tr>
+                                <tr><td>36-45</td><td>1 young she-camel (2 years)</td></tr>
+                                <tr><td>46-60</td><td>1 young she-camel (3 years)</td></tr>
+                                <tr><td>61-75</td><td>1 she-camel (4 years)</td></tr>
+                                <tr><td>76-90</td><td>2 young she-camels (3 years)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="livestock-table">
+                        <h4>Cattle (Minimum Nisab: 30)</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Number</th>
+                                    <th>Zakat Due</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>30-39</td><td>1 calf (1 year old)</td></tr>
+                                <tr><td>40-59</td><td>1 calf (2 years old)</td></tr>
+                                <tr><td>60-69</td><td>2 calves (1 year old)</td></tr>
+                                <tr><td>70-79</td><td>1 calf (1 yr) + 1 calf (2 yr)</td></tr>
+                                <tr><td>80-89</td><td>2 calves (2 years old)</td></tr>
+                                <tr><td>90-99</td><td>3 calves (1 year old)</td></tr>
+                                <tr><td>100-109</td><td>1 calf (1 yr) + 2 calves (2 yr)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="livestock-table">
+                        <h4>Sheep & Goats (Minimum Nisab: 40)</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Number</th>
+                                    <th>Zakat Due</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>40-120</td><td>1 sheep/goat</td></tr>
+                                <tr><td>121-200</td><td>2 sheep/goats</td></tr>
+                                <tr><td>201-399</td><td>3 sheep/goats</td></tr>
+                                <tr><td>400</td><td>4 sheep/goats</td></tr>
+                                <tr><td>Above 400</td><td>1 per 100 (then every 100 adds 1)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Questions</span>
+                <h2 class="section-title">Frequently Asked Questions</h2>
+            </div>
+
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>When should I pay Zakat?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Zakat becomes obligatory when you have possessed wealth equal to or above the Nisab for one lunar year (Hawl). You can pay it any time during the year, but it's recommended to pay it as soon as it's due. Many Muslims choose to pay during Ramadan for multiplied rewards.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Can I give Zakat to my relatives?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>You can give Zakat to relatives EXCEPT those you are financially responsible for (parents, grandparents, children, grandchildren) and your spouse. Giving to needy relatives like siblings, aunts, uncles, or cousins is actually doubly rewarding as it combines charity with maintaining family ties (Silat ar-Rahim).</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What if my wealth fluctuates during the year?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>The traditional method is to calculate based on what you possess at the end of your Zakat year, regardless of fluctuations. Some scholars allow you to deduct temporary debts that exist at the time of calculation. If your wealth falls below Nisab at the end of the year, you may not need to pay Zakat.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Is Zakat due on my retirement account (401k, pension)?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Scholars have different opinions. The majority view is that you should pay Zakat on the current value of your retirement accounts, either annually or defer until withdrawal. Some scholars deduct early withdrawal penalties from the calculation. Consult with a knowledgeable scholar for your specific situation.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How do I calculate Zakat on stocks and shares?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>For stocks held for investment, pay 2.5% on the market value. If you're a trader (buying/selling frequently), it's treated as business inventory. Some scholars differentiate between the company's liquid assets vs. fixed assets to determine a reduced rate, but the simplest method is 2.5% on total market value.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Can I pay Zakat in advance or in installments?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, you can pay Zakat in advance before your Zakat date. This is permissible and even recommended for those who can. You can also pay in installments throughout the year, as long as the total is paid by your due date. Many Muslims set up monthly payments to charity organizations for this purpose.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <i class="fas fa-moon"></i>
+                        <span>ZakatCalc</span>
+                    </div>
+                    <p>A comprehensive tool to help Muslims calculate and understand their Zakat obligation according to Islamic principles.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#calculator">Calculator</a></li>
+                        <li><a href="#nisab-info">Nisab Guide</a></li>
+                        <li><a href="#recipients">Recipients</a></li>
+                        <li><a href="#exemptions">Exemptions</a></li>
+                        <li><a href="#rates">Zakat Rates</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Islamic Finance</a></li>
+                        <li><a href="#">Charity Organizations</a></li>
+                        <li><a href="#">Scholar Directory</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 ZakatCalc. Made with faith and dedication. Please consult with qualified Islamic scholars for specific rulings.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
